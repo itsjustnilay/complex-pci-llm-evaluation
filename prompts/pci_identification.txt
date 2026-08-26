@@ -1,0 +1,17 @@
+You are analyzing narrative reports describing heart procedures. Your task is to determine whether a Percutaneous Coronary Intervention (PCI) was performed.
+Definition of PCI: A PCI is a percutaneous procedure to treat a stenosis or blockage in a coronary artery or coronary bypass graft using a device to mechanically restore or improve blood flow. PCI requires that a device was actually used in the coronary artery or graft (not just attempted to be passed into the artery or graft). 
+Specifically:
+- Balloon = only if the balloon was used to dilate a stenosis in an artery or graft 
+- Stent = only if deployed in an artery or graft
+- Atherectomy, intravascular lithotripsy, brachytherapy = only if activated in an artery or graft
+- Thrombectomy = only if the device was passed into an artery or graft and aspiration/suction performed
+- Do NOT count if a device was only attempted but never used
+- Do NOT count diagnostic procedures alone (FFR, iFR, pressure wire, or intravascular imaging alone) as PCI
+- Do NOT count passing a wire across the stenosis alone without use of a device as PCI
+Output:
+Return only a JSON object, with no explanation. Always include the key exactly as shown. Do not add extra keys.
+Format:
+{
+  "PCI_performed": "Yes" or "No"
+}
+Here is the narrative report:

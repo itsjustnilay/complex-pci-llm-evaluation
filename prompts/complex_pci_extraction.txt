@@ -1,0 +1,61 @@
+You are given narrative reports of PCI procedures. Your task is to:
+1. Extract six required clinical details.
+2. Use those details to determine whether the case qualifies as Complex PCI (see criteria).
+3. Output only a JSON object without additional explanations. Always include all keys, no blanks. Use "Unknown" if unclear.
+Step 1: Extract the six required details 
+1. vessels_treated (integer or "Unknown")
+   - Count the number of unique major coronary arteries or bypass grafts treated with PCI (e.g., LM, LAD, LCX, RCA, LIMA to LAD, SVG-OM etc.).
+   - A stent to the main vessel such as the LAD and a diagonal branch counts as 1 vessel not 2. Similarly a stent in OM1 and OM2 count as 1 (LCX system)
+   - Examples:
+     - "PCI to LAD and RCA" → 2
+     - "Treated proximal and mid LCX" → 1
+     - "Stented SVG-OM ostium"	→ 1
+     - "Stented from LAD into diagonal" → 1
+2. lesions_treated (integer or "Unknown")
+   - Count distinct lesion sites treated (even within the same vessel system). If one lesion extends continuously from one vessel into another (e.g., LM into LCX ostium), it is considered a single contiguous lesion
+   - Examples:
+     - "Proximal and mid LAD lesions treated" → 2
+     - "Three lesions across LAD and RCA" → 3
+     - "Lesion extending from distal LM into LCX" → 1
+     - "Lesion in ostial LM and a lesion in proximal LCX treated" → 2
+3. stents_implanted (integer or "Unknown")
+   - Count all stents deployed during the entire procedure.
+   - Examples:
+     - "A single 3.0 x 28 mm stent was deployed" → 1
+     - "Two overlapping drug-eluting stents were placed" → 2
+4. bifurcation_with_2_stents ("Yes" or "No")
+   - Identify if a bifurcation (branch point) was treated using a two-stent technique.
+   - Look for terms like: DK crush, culotte, mini-crush, T-stenting and look if 2 or more stents were deployed in the bifurcation.
+   - Examples:
+     - "Culotte technique for LAD/D1 bifurcation" → Yes
+     - "Provisional stenting" → No
+5. total_stent_length_mm (integer or "Unknown")
+   - Sum the lengths (in mm) of all stents deployed in all the arteries.
+   - Examples:
+     - "3.0 x 18 mm and 2.5 x 24 mm stents" → 42
+     - "Total stent length was 78 mm" → 78
+6. chronic_total_occlusion ("Yes" or "No")
+   - Identify if a chronic total occlusion (CTO) was treated.
+   - CTO = complete blockage >3 months
+   - Look for:
+     - "CTO of RCA treated"
+     - "Chronic total occlusion intervention performed"
+Step 2: Determine if this was a Complex PCI
+A PCI is considered complex if ANY ONE of the following criteria are met:
+- 3 or more vessels treated
+- 3 or more lesions treated
+- 3 or more stents implanted
+- Bifurcation treated with 2 stents
+- Total stent length > 60 mm
+- CTO treated
+Step 3: Output a JSON object in the below format
+Output Format:
+{
+  "vessels_treated": ...,
+  "lesions_treated": ...,
+  "stents_implanted": ...,
+  "bifurcation_with_2_stents": "...",
+  "total_stent_length_mm": ...,
+  "chronic_total_occlusion": "...",
+  "complex_pci": "Yes" or "No"
+}
